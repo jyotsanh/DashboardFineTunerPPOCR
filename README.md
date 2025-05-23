@@ -7,29 +7,34 @@ This repo contains the backend API for the Dashboard frontend, which provides a 
 - This repository follows [Black](https://black.readthedocs.io/en/stable/) code formatting.
 - Before pushing or creating a pull request, please ensure you:
 
-  1. Clone the repository:
+  1. Install `uv` package manager:
+
+     ```bash
+     curl -Ls https://astral.sh/uv/install.sh | bash
+     ```
+
+  2. Clone the repository:
 
      ```bash
      git clone https://github.com/jyotsanh/DashboardFineTunerPPOCR.git
      cd DashboardFineTunerPPOCR
      ```
 
-  2. Set up the environment and install dependencies:
+  3. Set up the environment and install dependencies:
 
      ```bash
      python -m venv venv
      source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-     pip install -r requirements.txt
+     uv sync                   # Installs dependencies defined in pyproject.toml or requirements.txt if configured
      ```
 
-  3. Install pre-commit and set it up:
+  4. Install pre-commit and set it up:
 
      ```bash
-     pip install pre-commit
      pre-commit install
      ```
 
-  4. Run Black formatting before committing:
+  5. Run Black formatting before committing:
      ```bash
      pre-commit run --all-files
      ```
