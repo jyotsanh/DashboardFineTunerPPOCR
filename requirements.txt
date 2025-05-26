@@ -19,3 +19,4 @@ identify
 PyYAML
 python-multipart
 pydantic-settings
+PyPDF2
