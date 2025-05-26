@@ -1,17 +1,19 @@
+import os
 import time
 import uvicorn
+import argparse
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-
+from config.base import load_environment_variables, BaseConfig
 
 from routes import register_routes
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Load environment variables
-load_dotenv()
+# when running the code inside the src folder:
+# mode = os.getenv("APP_ENV", "dev")
+# load_environment_variables(mode)
 
 # Add CORS middleware
 app.add_middleware(
@@ -38,4 +40,29 @@ register_routes(app)
 
 # Run the application
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # parse --run argument
+    parser = argparse.ArgumentParser(description="Run the FastAPI application.")
+    parser.add_argument(
+        "--run",
+        default="dev",
+        choices=["dev", "prod"],
+        help="Run mode: dev or prod",
+    )
+    args = parser.parse_args()
+
+    # Load environment variables
+    load_environment_variables(args.run)
+
+    # loads configs
+    config = BaseConfig()
+    print(f"API Key: {config.API_KEY}")
+    if args.run == "prod":
+        uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
+    else:
+        uvicorn.run(
+            "server:app",
+            host="0.0.0.0",
+            port=8000,
+            reload=True,
+            log_level="info",
+        )

@@ -1,4 +1,4 @@
-# ashboardFineTunerPPOCR
+# DashboardFineTunerPPOCR
 
 This repo contains the backend API for the Dashboard frontend, which provides a user-friendly interface for fine-tuning an OCR model.
 
@@ -47,3 +47,16 @@ This repo contains the backend API for the Dashboard frontend, which provides a 
      ```
 
 Thank you for following the project conventions.
+
+## How to run this project:
+
+- ensure you have `.env.dev` and `.env.prod` file in root folder
+  ```bash
+  .env.dev # for development enviroments
+  .env.prod # for production enviroments
+  ```
+- after activating the venv and installing all required package run the project:
+  ```bash
+  python src/server.py --run dev # for development
+  python src/server.py --run prod # for production
+  ```

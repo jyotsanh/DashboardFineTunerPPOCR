@@ -2,12 +2,17 @@ import os
 from dotenv import load_dotenv
 
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 
 
-class BaseConfig(BaseModel):
+def load_environment_variables(mode: str):
+    env_file = f".env.{mode}" if mode in ["dev", "prod"] else ".env.dev"
+    print(f"Loading environment variables from {env_file}")
+    load_dotenv(env_file)
+
+
+class BaseConfig(BaseSettings):
     API_KEY: str
 
     class Config:
-        env_file = ".env"
         env_file_encoding = "utf-8"

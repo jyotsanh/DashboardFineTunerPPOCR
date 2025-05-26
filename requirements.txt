@@ -17,3 +17,5 @@ h11
 cfgv
 identify
 PyYAML
+python-multipart
+pydantic-settings
