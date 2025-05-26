@@ -8,7 +8,7 @@
     "**/node_modules": true,
     "**/__pycache__": true
   },
-  "terminal.integrated.defaultProfile.linux": "bash", 
+  "terminal.integrated.defaultProfile.linux": "bash",
   "eslint.enable": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,

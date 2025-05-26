@@ -1,11 +1,11 @@
-import os
-import time
-import uvicorn
 import argparse
+import time
+
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from config.base import load_environment_variables, BaseConfig
 
+from config.base import BaseConfig, load_environment_variables
 from routes import register_routes
 
 # Initialize FastAPI app
@@ -41,7 +41,7 @@ register_routes(app)
 # Run the application
 if __name__ == "__main__":
     # parse --run argument
-    parser = argparse.ArgumentParser(description="Run the FastAPI application.")
+    parser = argparse.ArgumentParser(description="run server in two modes")
     parser.add_argument(
         "--run",
         default="dev",
@@ -57,11 +57,11 @@ if __name__ == "__main__":
     config = BaseConfig()
     print(f"API Key: {config.API_KEY}")
     if args.run == "prod":
-        uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
+        uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)
     else:
         uvicorn.run(
             "server:app",
-            host="0.0.0.0",
+            host="127.0.0.1",
             port=8000,
             reload=True,
             log_level="info",

@@ -20,3 +20,7 @@ PyYAML
 python-multipart
 pydantic-settings
 PyPDF2
+virtualenv
+platformdirs
+filelock
+distlib
