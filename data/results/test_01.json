@@ -1,0 +1,219 @@
+{
+    "input_path": "data/images/test_01.png",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": true,
+            "use_doc_unwarping": false
+        },
+        "angle": 180
+    },
+    "dt_polys": [
+        [
+            [
+                112,
+                55
+            ],
+            [
+                328,
+                66
+            ],
+            [
+                325,
+                126
+            ],
+            [
+                109,
+                115
+            ]
+        ],
+        [
+            [
+                141,
+                114
+            ],
+            [
+                298,
+                118
+            ],
+            [
+                297,
+                160
+            ],
+            [
+                139,
+                156
+            ]
+        ],
+        [
+            [
+                65,
+                160
+            ],
+            [
+                369,
+                168
+            ],
+            [
+                368,
+                205
+            ],
+            [
+                64,
+                198
+            ]
+        ],
+        [
+            [
+                69,
+                236
+            ],
+            [
+                365,
+                243
+            ],
+            [
+                364,
+                286
+            ],
+            [
+                68,
+                280
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 736,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "rec_texts": [
+        "D'PUNCAK",
+        "BERIS",
+        "LAKE RESORT",
+        "RESTORAN"
+    ],
+    "rec_scores": [
+        0.9525876045227051,
+        0.9979085922241211,
+        0.9858160018920898,
+        0.9963688850402832
+    ],
+    "rec_polys": [
+        [
+            [
+                112,
+                55
+            ],
+            [
+                328,
+                66
+            ],
+            [
+                325,
+                126
+            ],
+            [
+                109,
+                115
+            ]
+        ],
+        [
+            [
+                141,
+                114
+            ],
+            [
+                298,
+                118
+            ],
+            [
+                297,
+                160
+            ],
+            [
+                139,
+                156
+            ]
+        ],
+        [
+            [
+                65,
+                160
+            ],
+            [
+                369,
+                168
+            ],
+            [
+                368,
+                205
+            ],
+            [
+                64,
+                198
+            ]
+        ],
+        [
+            [
+                69,
+                236
+            ],
+            [
+                365,
+                243
+            ],
+            [
+                364,
+                286
+            ],
+            [
+                68,
+                280
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            109,
+            55,
+            328,
+            126
+        ],
+        [
+            139,
+            114,
+            298,
+            160
+        ],
+        [
+            64,
+            160,
+            369,
+            205
+        ],
+        [
+            68,
+            236,
+            365,
+            286
+        ]
+    ]
+}

@@ -176,3 +176,5 @@ cython_debug/
 
 .env.dev
 .env.prod
+.venv
+models/official_models/
