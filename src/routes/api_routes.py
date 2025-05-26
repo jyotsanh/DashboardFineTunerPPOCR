@@ -3,6 +3,8 @@ import io
 from fastapi import APIRouter, HTTPException, UploadFile
 from PyPDF2 import PdfReader
 
+from config.base import _get_ocr_model
+
 router = APIRouter()
 
 MAX_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -48,3 +50,9 @@ async def upload_file(Ufile: UploadFile):
             status_code=400,
             detail=str(e),
         )
+
+
+@router.post("image_orientation", tags=["Image Orientation"])
+async def orienation_image(Ufile: UploadFile):
+    _get_ocr_model()
+    # orientation_model.predict()
