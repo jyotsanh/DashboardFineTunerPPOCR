@@ -5,7 +5,7 @@ import numpy as np
 from fastapi import APIRouter, HTTPException, UploadFile
 from PyPDF2 import PdfReader
 
-from config.base import _get_ocr_model, _release_ocr_model
+from _models import _get_ocr_model, _release_ocr_model
 
 router = APIRouter()
 
