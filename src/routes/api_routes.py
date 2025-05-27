@@ -87,8 +87,12 @@ async def upload_image_file(UImage: UploadFile):
         ocr_res = {}
         accuracy_list = ocr_results[0]["rec_scores"]
         rec_word_list = ocr_results[0]["rec_texts"]
+        det_word_coordinates: list[np.ndarray] = ocr_results[0]["rec_polys"]
         for index in range(len(accuracy_list)):
-            ocr_res[rec_word_list[index]] = accuracy_list[index]
+            ocr_res[rec_word_list[index]] = {
+                "score": accuracy_list[index],
+                "coordinates": det_word_coordinates[index].tolist(),
+            }
         data = {
             "filename": UImage.filename,
             "content_type": UImage.content_type,

@@ -49,11 +49,11 @@ def _get_ocr_model():
             _ocr_model = PaddleOCR(
                 ocr_version="PP-OCRv5",  # Specify the OCR version
                 lang="en",
-                use_doc_orientation_classify=False,
+                use_doc_orientation_classify=True,
                 doc_orientation_classify_model_dir=ORIENTATION_MODEL_PATH,
-                use_doc_unwarping=False,  # use_doc_unwarping
+                use_doc_unwarping=True,  # use_doc_unwarping
                 doc_unwarping_model_dir=TXT_IMG_UNWRAPING_MODEL_PATH,
-                use_textline_orientation=False,
+                use_textline_orientation=True,
                 text_line_orientation_model_dir=TXT_LINE_ORIENTATION_MDL_PATH,
                 text_detection_model_dir=LIT_DET_MDL_PATH,
                 text_recognition_model_dir=LIT_REC_MDL_PATH,
