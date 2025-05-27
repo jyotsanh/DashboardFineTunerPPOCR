@@ -1,4 +1,5 @@
 import gc
+from typing import Optional
 
 from paddleocr import PaddleOCR
 
@@ -38,7 +39,7 @@ LIT_REC_MDL_PATH = f"{SYS_PATH}/official_models/mobile_vers/OCRv5_mobile_rec"
 # Text Detection Model:
 # Text Recognition Model:
 
-_ocr_model = None
+_ocr_model: Optional[PaddleOCR] = None
 
 
 def _get_ocr_model():

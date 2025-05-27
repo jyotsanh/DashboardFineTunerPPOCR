@@ -47,3 +47,4 @@ tight
 prox
 paddlepaddle-gpu
 paddlex[ocr]
+pdf2image

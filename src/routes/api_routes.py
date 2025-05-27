@@ -1,8 +1,10 @@
 import io
+from typing import List
 
 import cv2
 import numpy as np
 from fastapi import APIRouter, HTTPException, UploadFile
+from pdf2image import convert_from_bytes
 from PyPDF2 import PdfReader
 
 from _models import _get_ocr_model, _release_ocr_model
@@ -37,15 +39,32 @@ async def upload_pdf_file(Ufile: UploadFile):
             )
         content = await Ufile.read()
         reader = PdfReader(io.BytesIO(content))
+
         if len(reader.pages) > MAX_PAGES:
             return HTTPException(
                 status_code=400,
                 detail="PDF file exceeds the maximum allowed pages (10).",
             )
-        data = {
-            "filename": Ufile.filename,
-            "content_type": Ufile.content_type,
-        }
+        images = convert_from_bytes(content)
+        _ocr_model = _get_ocr_model()
+        data = {}
+        for i, img in enumerate(images):
+            ocr_res = _ocr_model.predict(np.array(img))
+            temp = {}
+            accuracy_list = ocr_res[0]["rec_scores"]
+            rec_word_list = ocr_res[0]["rec_texts"]
+            det_word_coordinates: List[np.ndarray] = ocr_res[0]["rec_polys"]
+            for index in range(len(accuracy_list)):
+                temp[rec_word_list[index]] = {
+                    "score": accuracy_list[index],
+                    "coordinates": det_word_coordinates[index].tolist(),
+                }
+            data[f"page_{i + 1}"] = {
+                "ocr_results": temp,
+            }
+            print(f"Completed page {i+1}")
+        data["filename"] = Ufile.filename
+        data["content_type"] = Ufile.content_type
         return data
     except Exception as e:
         return HTTPException(
@@ -78,25 +97,25 @@ async def upload_image_file(UImage: UploadFile):
                 size must be less than 10 MB.
                 """,
             )
-        ocr_model = _get_ocr_model()
+        _ocr_model = _get_ocr_model()
         image_content = await UImage.read()
         nparr = np.frombuffer(image_content, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        ocr_results = ocr_model.predict(image)
+        ocr_res = _ocr_model.predict(image)
         # print(ocr_results[0]["rec_scores"])
-        ocr_res = {}
-        accuracy_list = ocr_results[0]["rec_scores"]
-        rec_word_list = ocr_results[0]["rec_texts"]
-        det_word_coordinates: list[np.ndarray] = ocr_results[0]["rec_polys"]
+        temp = {}
+        accuracy_list = ocr_res[0]["rec_scores"]
+        rec_word_list = ocr_res[0]["rec_texts"]
+        det_word_coordinates: List[np.ndarray] = ocr_res[0]["rec_polys"]
         for index in range(len(accuracy_list)):
-            ocr_res[rec_word_list[index]] = {
+            temp[rec_word_list[index]] = {
                 "score": accuracy_list[index],
                 "coordinates": det_word_coordinates[index].tolist(),
             }
         data = {
             "filename": UImage.filename,
             "content_type": UImage.content_type,
-            "results": ocr_res,
+            "results": temp,
         }
         return data
     except Exception as e:
@@ -106,9 +125,8 @@ async def upload_image_file(UImage: UploadFile):
             detail=str(e),
         )
 
-
-@router.post("/image_orientation", tags=["Image Orientation"])
-async def orienation_image(Ufile: UploadFile):
+    # @router.post("/image_orientation", tags=["Image Orientation"])
+    # async def orienation_image(Ufile: UploadFile):
     try:
         pass
     except RuntimeError as e:
