@@ -3,7 +3,7 @@ from typing import List
 
 import cv2
 import numpy as np
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, Query, UploadFile
 from pdf2image import convert_from_bytes
 from PyPDF2 import PdfReader
 
@@ -12,19 +12,26 @@ from _models import _get_ocr_model, _release_ocr_model
 router = APIRouter()
 
 MAX_SIZE = 10 * 1024 * 1024  # 10 MB
-MAX_PAGES = 10
+MAX_PAGES = 80
 
 
 @router.post("/upload-pdf", tags=["PDF File Upload"])
-async def upload_pdf_file(Ufile: UploadFile):
+async def upload_pdf_file(
+    Ufile: UploadFile,
+    user_id: str,
+    start_page: int = 0,
+    pages_to_read_at_once: int = Query(
+        1, ge=1, le=10, description="How many pages to process at once"
+    ),
+):
     """Upload a PDF file and return its metadata.
 
     Args:
         Ufile (UploadFile): The file to be uploaded.
+        pages_to_read_at_once (int): Page number to process (1-based indexing).
+        user_id (str): User identifier from authentication.
     Returns:
-        dict: Metadata of the uploaded file, including:
-          - filename
-          - content type.
+        dict: OCR results for the requested page range and PDF metadata.
     """
     try:
         if (
@@ -39,30 +46,48 @@ async def upload_pdf_file(Ufile: UploadFile):
             )
         content = await Ufile.read()
         reader = PdfReader(io.BytesIO(content))
-
-        if len(reader.pages) > MAX_PAGES:
+        total_pages = len(reader.pages)
+        if start_page > total_pages:
             return HTTPException(
                 status_code=400,
-                detail="PDF file exceeds the maximum allowed pages (10).",
+                detail="""start page should be smaller,
+                        than total length of pdf""",
+            )
+        if pages_to_read_at_once > total_pages:
+            return HTTPException(
+                status_code=400,
+                detail="""pages to read at once should be smaller,
+                            than total length of pdf""",
+            )
+        if total_pages > MAX_PAGES:
+            return HTTPException(
+                status_code=400,
+                detail=f"""PDF file exceeds the maximum allowed page
+                         only upto ({MAX_PAGES}) pages are allowed.""",
             )
         images = convert_from_bytes(content)
         _ocr_model = _get_ocr_model()
         data = {}
+        idx = 0
         for i, img in enumerate(images):
-            ocr_res = _ocr_model.predict(np.array(img))
-            temp = {}
-            accuracy_list = ocr_res[0]["rec_scores"]
-            rec_word_list = ocr_res[0]["rec_texts"]
-            det_word_coordinates: List[np.ndarray] = ocr_res[0]["rec_polys"]
-            for index in range(len(accuracy_list)):
-                temp[rec_word_list[index]] = {
-                    "score": accuracy_list[index],
-                    "coordinates": det_word_coordinates[index].tolist(),
+            if i + 1 >= start_page:
+                if idx == pages_to_read_at_once:
+                    break
+                ocr_res = _ocr_model.predict(np.array(img))
+                temp = {}
+                accuracy_list = ocr_res[0]["rec_scores"]
+                rec_word_list = ocr_res[0]["rec_texts"]
+                det_word_cordnates: List[np.ndarray] = ocr_res[0]["rec_polys"]
+                for index in range(len(accuracy_list)):
+                    temp[rec_word_list[index]] = {
+                        "score": accuracy_list[index],
+                        "coordinates": det_word_cordnates[index].tolist(),
+                    }
+                data[f"page_{i + 1}"] = {
+                    "ocr_results": temp,
                 }
-            data[f"page_{i + 1}"] = {
-                "ocr_results": temp,
-            }
-            print(f"Completed page {i+1}")
+                print(f"Completed page {i+1}")
+                idx += 1
         data["filename"] = Ufile.filename
         data["content_type"] = Ufile.content_type
         return data
@@ -106,11 +131,11 @@ async def upload_image_file(UImage: UploadFile):
         temp = {}
         accuracy_list = ocr_res[0]["rec_scores"]
         rec_word_list = ocr_res[0]["rec_texts"]
-        det_word_coordinates: List[np.ndarray] = ocr_res[0]["rec_polys"]
+        det_word_cordnates: List[np.ndarray] = ocr_res[0]["rec_polys"]
         for index in range(len(accuracy_list)):
             temp[rec_word_list[index]] = {
                 "score": accuracy_list[index],
-                "coordinates": det_word_coordinates[index].tolist(),
+                "coordinates": det_word_cordnates[index].tolist(),
             }
         data = {
             "filename": UImage.filename,
@@ -125,12 +150,13 @@ async def upload_image_file(UImage: UploadFile):
             detail=str(e),
         )
 
-    # @router.post("/image_orientation", tags=["Image Orientation"])
-    # async def orienation_image(Ufile: UploadFile):
-    try:
-        pass
-    except RuntimeError as e:
-        return HTTPException(
-            status_code=500,
-            detail=f"Error loading OCR model: {str(e)}",
-        )
+
+# @router.post("/image_orientation", tags=["Image Orientation"])
+# async def orienation_image(Ufile: UploadFile):
+# try:
+#     pass
+# except RuntimeError as e:
+#     return HTTPException(
+#         status_code=500,
+#         detail=f"Error loading OCR model: {str(e)}",
+#     )
