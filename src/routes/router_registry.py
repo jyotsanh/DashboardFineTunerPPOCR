@@ -17,6 +17,6 @@ def register_routes(app: FastAPI):
 
     app.include_router(
         router=model_routes.router,
-        prefix="/model",
+        prefix="/ai",
         responses={"404": {"description": "Not Found"}},
     )

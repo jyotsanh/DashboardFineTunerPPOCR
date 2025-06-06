@@ -179,3 +179,4 @@ cython_debug/
 .venv
 models/official_models/
 data/text_det_data/
+PaddleOCR
