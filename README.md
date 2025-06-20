@@ -46,6 +46,26 @@ This repo contains the backend API for the Dashboard frontend, which provides a 
      pre-commit run --all-files
      ```
 
+  6. Install new python for specific project:
+
+     ```bash
+     # to list all available download able version
+     uv python list --all-versions
+
+     # to list all version available in you system:
+     uv python list --only-installed
+
+     # now pin the python to use open a project folder:
+     uv python pin 3.9
+     # then check if it's working or not by :
+      uv python find
+      # create venv using python 3.9
+      uv venv  .venv
+
+      # check if it's your installed version:
+      python
+     ```
+
 Thank you for following the project conventions.
 
 ## How to run this project:
@@ -60,3 +80,9 @@ Thank you for following the project conventions.
   python src/server.py --run dev # for development
   python src/server.py --run prod # for production
   ```
+
+## Project Details:
+
+### Introduction:
+
+- this is

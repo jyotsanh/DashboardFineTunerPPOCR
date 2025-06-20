@@ -180,3 +180,4 @@ cython_debug/
 models/official_models/
 data/text_det_data/
 PaddleOCR
+official_models

@@ -1,5 +1,5 @@
 import io
-from typing import List
+from typing import List, Literal
 
 import cv2
 import numpy as np
@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Query, UploadFile
 from pdf2image import convert_from_bytes
 from PyPDF2 import PdfReader
 
-from _models import _get_ocr_model, _release_ocr_model
+from _models import _get_ocr_model, _get_structure_ocr_model, _release_ocr_model
 
 router = APIRouter()
 
@@ -145,6 +145,54 @@ async def upload_image_file(UImage: UploadFile):
         return data
     except Exception as e:
         _release_ocr_model()
+        return HTTPException(
+            status_code=400,
+            detail=str(e),
+        )
+
+
+@router.post("/process/imgUrl", tags=["Image URL Processing"])
+async def process_image_url(
+    image_url: str, model: Literal["OCRv5", "StructureOCR"] = "OCRv5"
+):
+    """Process an image from a URL and return its metadata.
+    PaddleOCR model is used to process the image.
+    It will extract text and coordinates from the image.
+    Args:
+        image_url (str): The URL of the image to be processed.
+    Returns:
+        dict: Metadata of the processed image, including:
+          - filename
+          - content type.
+    """
+    try:
+        if model == "OCRv5":
+
+            _ocr_model = _get_ocr_model()
+            ocr_res = _ocr_model.predict(input=image_url)
+            temp = {}
+            accuracy_list = ocr_res[0]["rec_scores"]
+            rec_word_list = ocr_res[0]["rec_texts"]
+            det_word_cordnates: List[np.ndarray] = ocr_res[0]["rec_polys"]
+            for index in range(len(accuracy_list)):
+                temp[rec_word_list[index]] = {
+                    "score": accuracy_list[index],
+                    "coordinates": det_word_cordnates[index].tolist(),
+                }
+            data = {
+                "results": temp,
+            }
+            return data
+        elif model == "StructureOCR":
+            pipeline = _get_structure_ocr_model()
+            output = pipeline.predict(
+                input=image_url,
+                use_doc_orientation_classify=False,
+                use_doc_unwarping=False,
+            )
+            return output
+    except Exception as e:
+
         return HTTPException(
             status_code=400,
             detail=str(e),
