@@ -8,8 +8,36 @@ from fastapi.middleware.cors import CORSMiddleware
 from config.base import BaseConfig, load_environment_variables
 from routes import register_routes
 
+from _models import _get_ocr_model
+
+from contextlib import asynccontextmanager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the ML model
+    global model
+    model = _get_ocr_model()
+    yield
+    # Clean up the ML models and release the resources
+    model = None
+
+
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(
+    title="DashboardFineTunerPPOCR",
+    description=(
+        "A FastAPI backend to receive images"
+        "and PDFs from a frontend dashboard,"
+        "enabling users to fine-tune a OCR"
+        "model of their own. The backend handles"
+        "data preprocessing, configuration, and"
+        "training,streamlining the fine-tuning"
+        "process for document OCR tasks"
+    ),
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 # when running the code inside the src folder:
 # mode = os.getenv("APP_ENV", "dev")

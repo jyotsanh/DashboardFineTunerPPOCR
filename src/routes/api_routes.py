@@ -39,10 +39,10 @@ async def upload_pdf_file(
         ):  # Check if the file is a PDF and within size limits
             return HTTPException(
                 status_code=400,
-                detail="""
-                Invalid file type.
-                Only PDF files are allowed and size must be less than 10 MB.
-                """,
+                detail=(
+                    "Invalid file type."
+                    "Only PDF files are allowed and size must be less than 10 MB."
+                ),
             )
         content = await Ufile.read()
         reader = PdfReader(io.BytesIO(content))
@@ -50,8 +50,7 @@ async def upload_pdf_file(
         if start_page > total_pages:
             return HTTPException(
                 status_code=400,
-                detail="""start page should be smaller,
-                        than total length of pdf""",
+                detail=("start page should be smaller than total length of pdf"),
             )
         if pages_to_read_at_once > total_pages:
             return HTTPException(

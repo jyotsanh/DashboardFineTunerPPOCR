@@ -4,22 +4,19 @@ from typing import Optional
 from paddleocr import PaddleOCR, PPStructureV3
 
 # _SUPPORTED_OCR_VERSIONS = ["PP-OCRv3", "PP-OCRv4", "PP-OCRv5"]
-SYS_PATH = "/home/b0g0/product/DashboardFineTunerPPOCR/models"
-ORIENTATION_MODEL_PATH = f"{SYS_PATH}/official_models/PP-LCNet_x1_0_doc_ori"
-TXT_DETECTION_MODEL_PATH = f"{SYS_PATH}/official_models/PP-OCRv5_server_det"
-TXT_RECGNTION_MODEL_PATH = f"{SYS_PATH}/official_models/PP-OCRv5_server_rec"
-TXT_IMG_UNWRAPING_MODEL_PATH = f"{SYS_PATH}/official_models/UVDoc"
-TXT_LINE_ORIENTATION_MDL_PATH = (
-    f"{SYS_PATH}/official_models/PP-LCNet_x0_25_textline_ori"
-)
-LIT_DET_MDL_PATH = f"{SYS_PATH}/official_models/mobile_vers/OCRv5_mobile_det"
-LIT_REC_MDL_PATH = f"{SYS_PATH}/official_models/mobile_vers/OCRv5_mobile_rec"
+ORIENTATION_MODEL_PATH = f"./models/official_models/PP-LCNet_x1_0_doc_ori"
+TXT_DETECTION_MODEL_PATH = f"./models/official_models/PP-OCRv5_server_det"
+TXT_RECGNTION_MODEL_PATH = f"./models/official_models/PP-OCRv5_server_rec"
+TXT_IMG_UNWRAPING_MODEL_PATH = f"./models/official_models/UVDoc"
+TXT_LINE_ORIENTATION_MDL_PATH = f"./models/official_models/PP-LCNet_x0_25_textline_ori"
+LIT_DET_MDL_PATH = f"./models/official_models/mobile_vers/OCRv5_mobile_det"
+LIT_REC_MDL_PATH = f"./models/official_models/mobile_vers/OCRv5_mobile_rec"
 
-SERVER_DET_MDL_PATH = f"{SYS_PATH}/official_models/PP-OCRv5_server_det"
-SERVER_REC_MDL_PATH = f"{SYS_PATH}/official_models/PP-OCRv5_server_rec"
+SERVER_DET_MDL_PATH = f"./models/official_models/PP-OCRv5_server_det"
+SERVER_REC_MDL_PATH = f"./models/official_models/PP-OCRv5_server_rec"
 
-DOC_BLOCK_LAYOUT_PATH = "f{SYS_PATH}/official_models/PP-DocBlockLayout"
-DOC_LAYOUT_PLUS_L = "f{SYS_PATH}/official_models/PP-DocLayout_plus-L"
+DOC_BLOCK_LAYOUT_PATH = f"./models/official_models/PP-DocBlockLayout"
+DOC_LAYOUT_PLUS_L = f"./models/official_models/PP-DocLayout_plus-L"
 
 # Text Image Orientation Model:
 # - This model mainly distinguishes the orientation of the document image
